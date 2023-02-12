@@ -1,0 +1,44 @@
+import piplite
+await piplite.install(['pandas','matplotlib','scikit-learn','seaborn', 'numpy'])
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler,PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+%matplotlib inline
+
+from pyodide.http import pyfetch
+
+async def download(url, filename):
+    response = await pyfetch(url)
+    if response.status == 200:
+        with open(filename, "wb") as f:
+            f.write(await response.bytes())
+
+file_name='https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DA0101EN-SkillsNetwork/labs/FinalModule_Coursera/data/kc_house_data_NaN.csv'
+
+await download(file_name, "kc_house_data_NaN.csv")
+file_name="kc_house_data_NaN.csv"
+
+
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
+
+df = pd.read_csv(file_name)
+df.drop(['id', 'Unnamed: 0'], axis = 1, inplace = True)
+
+#Boxplot code
+sns.regplot(x = df['sqft_above'], y = df['price'])
+plt.ylabel('Price')
+plt.xlabel('Square Foot')
+plt.title('Square Foot to Price Data Relationship')
+plt.ylim(0,)
+#Boxplot Code
+
+plt.show()
+
+#df.dtypes
